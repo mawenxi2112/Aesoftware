@@ -2,6 +2,7 @@
 using Aesoftware.Other;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace Aesoftware.Manager
         private static readonly object padlock = new object();
         private bool isInit = false;
 
-        public List<Account> accountList = new List<Account>();
         public Account currentAccount = null;
 
         AccountManager()
@@ -42,38 +42,51 @@ namespace Aesoftware.Manager
             if (isInit)
                 return;
 
-            LoadAccountList();
-
             isInit = true;
         }
 
-        public void LoadAccountList()
+        public Flag Login(string username, string password)
         {
-            accountList = Utility.DataTableToList<Account>(DatabaseManager.Instance.Query(DataString.QuerySelectAccount));
+            currentAccount = DataManager.Instance.accountList.Where(account => account.Username == username && account.IsDeleted == 0).FirstOrDefault();
+
+            // Account does not exist
+            if (currentAccount == null)
+                return Flag.LOGIN_USER_DOES_NOT_EXIST;
+            else
+            {
+                if (currentAccount.Username == username && currentAccount.Password == password)
+                {
+                    //return Flag.LOGIN_SUCCESS;
+
+                    // Temporary removed HWID checking
+                    if (currentAccount.MachineGuid == SecurityManager.Instance.GetMachineGuid())
+                        return Flag.LOGIN_SUCCESS;
+                    else
+                        return Flag.LOGIN_HWID_WRONG;
+                }
+
+                return Flag.LOGIN_INVALID_PASSWORD;
+            }
         }
 
-        public bool Login(string username, string password)
+        public Flag Register(string username, string password, string email, string invitationCode)
         {
-            LoadAccountList();
 
-            currentAccount = accountList.Where(account =>
-            account.Username == username &&
-            account.Password == password &&
-            account.isDeleted == 0).FirstOrDefault();
+            Account newAccount = new Account();
+
+            newAccount.Username = username;
+            newAccount.Password = password;
+            newAccount.AccessRole = 0;
+            newAccount.IsDeleted = 0;
+            newAccount.CreatedDate = DateTime.Now;
+            newAccount.LastModified = DateTime.Now;
+            newAccount.CreatedIP = SecurityManager.Instance.GetPublicIP();
+            newAccount.LastIP = SecurityManager.Instance.GetPublicIP();
+            newAccount.MachineGuid = SecurityManager.Instance.GetMachineGuid();
+            newAccount.InvitedById = 
 
             // To-do: Add different flags for more customizability
-            if (currentAccount != null)
-                return true;
-
-            return false;
-        }
-
-        public bool Register(string username, string password)
-        {
-            LoadAccountList();
-
-            // To-do: Add different flags for more customizability
-            return false;
+            return Flag.REGISTER_SUCCESS;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Aesoftware.Manager
 
             isInit = true;
 
-            DatabaseManager.Instance.Init();
+            DataManager.Instance.Init();
             AccountManager.Instance.Init();
             SecurityManager.Instance.Init();
             // The form here will be the default form on launch.
@@ -52,7 +52,7 @@ namespace Aesoftware.Manager
         // Clean up when program closes
         public void CleanUp()
         {
-            DatabaseManager.Instance.Disconnect();
+            DataManager.Instance.Disconnect();
         }
     }
 }

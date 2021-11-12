@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.LoginInputBox = new System.Windows.Forms.TextBox();
             this.UsernameLabel = new System.Windows.Forms.Label();
             this.PasswordLabel = new System.Windows.Forms.Label();
@@ -48,22 +49,23 @@
             this.UsernameLabel.AutoSize = true;
             this.UsernameLabel.Location = new System.Drawing.Point(13, 15);
             this.UsernameLabel.Name = "UsernameLabel";
-            this.UsernameLabel.Size = new System.Drawing.Size(53, 13);
+            this.UsernameLabel.Size = new System.Drawing.Size(55, 13);
             this.UsernameLabel.TabIndex = 1;
-            this.UsernameLabel.Text = "username";
+            this.UsernameLabel.Text = "Username";
             // 
             // PasswordLabel
             // 
             this.PasswordLabel.AutoSize = true;
-            this.PasswordLabel.Location = new System.Drawing.Point(16, 48);
+            this.PasswordLabel.Location = new System.Drawing.Point(13, 47);
             this.PasswordLabel.Name = "PasswordLabel";
-            this.PasswordLabel.Size = new System.Drawing.Size(52, 13);
+            this.PasswordLabel.Size = new System.Drawing.Size(53, 13);
             this.PasswordLabel.TabIndex = 2;
-            this.PasswordLabel.Text = "password";
+            this.PasswordLabel.Text = "Password";
+            this.PasswordLabel.Click += new System.EventHandler(this.PasswordLabel_Click);
             // 
             // PasswordInputBox
             // 
-            this.PasswordInputBox.Location = new System.Drawing.Point(72, 48);
+            this.PasswordInputBox.Location = new System.Drawing.Point(72, 44);
             this.PasswordInputBox.Name = "PasswordInputBox";
             this.PasswordInputBox.Size = new System.Drawing.Size(100, 20);
             this.PasswordInputBox.TabIndex = 3;
@@ -74,7 +76,7 @@
             this.LoginButton.Name = "LoginButton";
             this.LoginButton.Size = new System.Drawing.Size(74, 23);
             this.LoginButton.TabIndex = 4;
-            this.LoginButton.Text = "login";
+            this.LoginButton.Text = "Login";
             this.LoginButton.UseVisualStyleBackColor = true;
             this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
@@ -84,7 +86,7 @@
             this.RegisterButton.Name = "RegisterButton";
             this.RegisterButton.Size = new System.Drawing.Size(74, 23);
             this.RegisterButton.TabIndex = 5;
-            this.RegisterButton.Text = "register";
+            this.RegisterButton.Text = "Register";
             this.RegisterButton.UseVisualStyleBackColor = true;
             this.RegisterButton.Click += new System.EventHandler(this.RegisterButton_Click);
             // 
@@ -101,7 +103,9 @@
             this.Controls.Add(this.UsernameLabel);
             this.Controls.Add(this.LoginInputBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.Text = "aes 0.1";
             this.Load += new System.EventHandler(this.LoginForm_Load);

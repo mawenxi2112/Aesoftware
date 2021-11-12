@@ -1,5 +1,6 @@
 ﻿using Aesoftware.Manager;
 using Aesoftware.Page;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,6 @@ namespace Aesoftware
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //ValorantManager.Instance.SetValorantFormData("ikantembikai", "Wenxima2002");
             Application.Run(ComponentManager.Instance.Init());
             ComponentManager.Instance.CleanUp();
         }

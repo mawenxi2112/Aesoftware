@@ -26,9 +26,12 @@ namespace Aesoftware.Other
     {
 
         public static HttpClient httpClient = new HttpClient();
-
+        private static Random random = new Random();
         private static T GetItem<T>(DataRow dataRow)
         {
+            if (dataRow == null)
+                return default(T);
+
             Type temp = typeof(T);
             T obj = Activator.CreateInstance<T>();
 
@@ -48,6 +51,9 @@ namespace Aesoftware.Other
 
         public static List<T> DataTableToList<T>(DataTable dataTable)
         {
+            if (dataTable == null)
+                return null;
+
             List<T> data = new List<T>();
             foreach (DataRow row in dataTable.Rows)
             {
@@ -55,6 +61,17 @@ namespace Aesoftware.Other
                 data.Add(item);
             }
             return data;
+        }
+
+        public static string GetRandomString(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var result = new string(
+                Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+
+            return result;
         }
 
         // To-do: Clean up request functions and put it in utility

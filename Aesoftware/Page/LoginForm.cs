@@ -33,5 +33,10 @@ namespace Aesoftware.Page
         {
 
         }
+
+        private void PasswordLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

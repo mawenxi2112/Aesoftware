@@ -45,7 +45,7 @@ namespace Aesoftware.Manager
             if (isInit)
                 return null;
 
-            defaultForm = loginForm;
+            defaultForm = mainMenuForm;
 
             formList.Clear();
             formList.Add(loginForm);
@@ -98,13 +98,23 @@ namespace Aesoftware.Manager
 
         public void Login(string username, string password)
         {
-            if (AccountManager.Instance.Login(username, password))
+            Data.Flag flag = AccountManager.Instance.Login(username, password);
+
+            if (flag == Data.Flag.LOGIN_SUCCESS)
             {
-                ShowMesageBoxButton("login success", "user authenticated!",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowMesageBoxButton("Login Success", "User authenticated!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ChangeForm("MainMenuForm");
             }
             else
-                ShowMesageBoxButton("login failed", "failed to authenticate user", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowMesageBoxButton("Login Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        }
+
+        public void Register(string username, string password, string email, string invitationCode)
+        {
+            Data.Flag flag = AccountManager.Instance.Register(username, password, email, invitationCode);
+
+
         }
 
         public void Logout()

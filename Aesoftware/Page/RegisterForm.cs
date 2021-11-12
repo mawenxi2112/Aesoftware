@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aesoftware.Manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -25,6 +26,14 @@ namespace Aesoftware.Page
                 Hide();
             }
         }
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+            FormManager.Instance.Register(RegisterUsernameTextBox.Text, RegisterPasswordTextBox.Text, RegisterEmailTextBox.Text, RegisterInvitationCodeTextbox.Text);
+        }
 
+        private void RegisterCloseButton_Click(object sender, EventArgs e)
+        {
+            FormManager.Instance.ChangeForm("LoginForm");
+        }
     }
 }

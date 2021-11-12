@@ -96,7 +96,7 @@
     <Compile Include="Data\DataString.cs" />
     <Compile Include="Manager\AccountManager.cs" />
     <Compile Include="Manager\ComponentManager.cs" />
-    <Compile Include="Manager\DatabaseManager.cs" />
+    <Compile Include="Manager\DataManager.cs" />
     <Compile Include="Manager\FormManager.cs" />
     <Compile Include="Manager\SecurityManager.cs" />
     <Compile Include="Page\LoginForm.cs">
