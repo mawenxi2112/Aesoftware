@@ -47,6 +47,7 @@ namespace Aesoftware.Manager
 
         public Flag Login(string username, string password)
         {
+            DataManager.Instance.LoadData();
             currentAccount = DataManager.Instance.accountList.Where(account => account.Username == username && account.IsDeleted == 0).FirstOrDefault();
 
             // Account does not exist
@@ -71,8 +72,20 @@ namespace Aesoftware.Manager
 
         public Flag Register(string username, string password, string email, string invitationCode)
         {
-
+            DataManager.Instance.LoadData();
             Account newAccount = new Account();
+
+            if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(email) || string.IsNullOrEmpty(invitationCode))
+                return Flag.REGISTER_EMPTY_FIELD;
+
+            if (DataManager.Instance.GetAccountByUsername(username) != null)
+                return Flag.REGISTER_USER_ALREADY_EXIST;
+
+            if (DataManager.Instance.DoesMachineExist(SecurityManager.Instance.GetMachineGuid()))
+                return Flag.REGISTER_ALREADY_SIGNED_UP_BEFORE;
+
+            if (!ActivateInviteCode(invitationCode))
+                return Flag.REGISTER_INVALID_INVITE;
 
             newAccount.Username = username;
             newAccount.Password = password;
@@ -83,10 +96,23 @@ namespace Aesoftware.Manager
             newAccount.CreatedIP = SecurityManager.Instance.GetPublicIP();
             newAccount.LastIP = SecurityManager.Instance.GetPublicIP();
             newAccount.MachineGuid = SecurityManager.Instance.GetMachineGuid();
-            newAccount.InvitedById = 
+            newAccount.InvitedById = DataManager.Instance.GetInviterIdFromInviteCode(invitationCode);
+            newAccount.InviteCount = DataManager.Instance.connection.DefaultInviteCount;
 
-            // To-do: Add different flags for more customizability
+            DataManager.Instance.InsertAccount(newAccount);
             return Flag.REGISTER_SUCCESS;
+        }
+
+        public bool ActivateInviteCode(string code)
+        {
+            Invite invite = DataManager.Instance.ValidateInviteCode(code);
+
+            if (invite == null)
+                return false;
+
+            DataManager.Instance.UpdateInviteCode(invite);
+
+            return true;
         }
     }
 }

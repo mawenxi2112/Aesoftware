@@ -97,6 +97,7 @@
             this.Name = "MainMenuForm";
             this.Text = "Select Module";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainMenuForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainMenuForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 

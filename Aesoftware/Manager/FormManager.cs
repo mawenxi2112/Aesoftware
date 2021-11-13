@@ -45,7 +45,7 @@ namespace Aesoftware.Manager
             if (isInit)
                 return null;
 
-            defaultForm = mainMenuForm;
+            defaultForm = loginForm;
 
             formList.Clear();
             formList.Add(loginForm);
@@ -55,6 +55,17 @@ namespace Aesoftware.Manager
             isInit = true;
 
             return defaultForm;
+        }
+
+        public bool IsFormActive(string formName)
+        {
+            foreach (Form form in formList)
+            {
+                if (form.Name == formName && form.Visible)
+                    return true;
+            }
+
+            return false;
         }
 
         public void ShowForm(string formName)
@@ -114,7 +125,23 @@ namespace Aesoftware.Manager
         {
             Data.Flag flag = AccountManager.Instance.Register(username, password, email, invitationCode);
 
+            if (flag == Data.Flag.REGISTER_SUCCESS)
+            {
+                ShowMesageBoxButton("Register Success", "User registered!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ChangeForm("LoginForm");
+            }
+            else
+                ShowMesageBoxButton("Register Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
+        public void ClientDisabled()
+        {
+            ShowMesageBoxButton("Notice", "Client is currently disabled!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public void DatabaseError()
+        {
+            ShowMesageBoxButton("Server error", "Unable to connect to server, please try again later or notify wenxi#9300 on discord", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         public void Logout()

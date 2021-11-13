@@ -11,11 +11,12 @@ namespace Aesoftware.Data
         LOGIN_SUCCESS,
         LOGIN_USER_DOES_NOT_EXIST,
         LOGIN_INVALID_PASSWORD,
-        LOGIN_HWID_WRONG,
+        LOGIN_WRONG_MACHINE,
         REGISTER_SUCCESS,
+        REGISTER_EMPTY_FIELD,
         REGISTER_USER_ALREADY_EXIST,
-        REGISTER_ALREADY_REGISTERED,
         REGISTER_INVALID_INVITE,
+        REGISTER_ACCOUNT_WITH_MACHINE_EXIST,
     }
     public class DataString
     {
@@ -24,5 +25,6 @@ namespace Aesoftware.Data
         public const string QuerySelectModule = "SELECT * FROM Module";
         public const string QuerySelectModulePermission = "SELECT * FROM ModulePermission";
         public const string QuerySelectRole = "SELECT * FROM Role";
+        public const string QuerySelectConnection = "SELECT * FROM Connection";
     }
 }

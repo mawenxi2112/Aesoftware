@@ -31,12 +31,8 @@ namespace Aesoftware.Page
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-
+            DataManager.Instance.LoadData();
         }
 
-        private void PasswordLabel_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

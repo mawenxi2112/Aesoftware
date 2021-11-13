@@ -28,7 +28,6 @@ namespace Aesoftware.Data
     {
         public int Id { get; set; }
         public int IssueAccountId { get; set; }
-        public int ClaimAccountId { get; set; }
         public string Code { get; set; }
         public int Count { get; set; }
     }
@@ -36,7 +35,7 @@ namespace Aesoftware.Data
     public class ModuleItem
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string Name { get; set; }
         public int IsVisible { get; set; }
         public int MinimumRole { get; set; }
     }
@@ -55,6 +54,16 @@ namespace Aesoftware.Data
     public class Role
     {
         public int Id { get; set; }
-        public int RoleName { get; set; }
+        public string RoleName { get; set; }
+    }
+
+    public class Connection
+    {
+        public int PollingRate { get; set; }
+
+        public int IsClientDisabled { get; set; }
+
+        public string AnnouncementMessage { get; set; }
+        public int DefaultInviteCount { get; set; }
     }
 }
