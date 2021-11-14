@@ -47,7 +47,9 @@ namespace Aesoftware.Manager
 
         public Flag Login(string username, string password)
         {
-            DataManager.Instance.LoadData();
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return Flag.LOGIN_EMPTY_FIELD;
+
             currentAccount = DataManager.Instance.accountList.Where(account => account.Username == username && account.IsDeleted == 0).FirstOrDefault();
 
             // Account does not exist
@@ -55,24 +57,20 @@ namespace Aesoftware.Manager
                 return Flag.LOGIN_USER_DOES_NOT_EXIST;
             else
             {
-                if (currentAccount.Username == username && currentAccount.Password == password)
+                if (currentAccount.Password == password)
                 {
-                    //return Flag.LOGIN_SUCCESS;
-
-                    // Temporary removed HWID checking
-                    if (currentAccount.MachineGuid == SecurityManager.Instance.GetMachineGuid())
-                        return Flag.LOGIN_SUCCESS;
+                    if (DataManager.Instance.connection.IsHWIDLocked == 1 && currentAccount.MachineGuid != SecurityManager.Instance.GetMachineGuid())
+                        return Flag.LOGIN_WRONG_MACHINE;
                     else
-                        return Flag.LOGIN_HWID_WRONG;
+                        return Flag.LOGIN_SUCCESS;
                 }
-
-                return Flag.LOGIN_INVALID_PASSWORD;
+                else
+                    return Flag.LOGIN_INVALID_PASSWORD;
             }
         }
 
         public Flag Register(string username, string password, string email, string invitationCode)
         {
-            DataManager.Instance.LoadData();
             Account newAccount = new Account();
 
             if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(email) || string.IsNullOrEmpty(invitationCode))
@@ -81,8 +79,8 @@ namespace Aesoftware.Manager
             if (DataManager.Instance.GetAccountByUsername(username) != null)
                 return Flag.REGISTER_USER_ALREADY_EXIST;
 
-            if (DataManager.Instance.DoesMachineExist(SecurityManager.Instance.GetMachineGuid()))
-                return Flag.REGISTER_ALREADY_SIGNED_UP_BEFORE;
+            if (DataManager.Instance.DoesMachineExist(SecurityManager.Instance.GetMachineGuid()) && DataManager.Instance.connection.IsHWIDLocked == 1)
+                return Flag.REGISTER_ACCOUNT_WITH_MACHINE_EXIST;
 
             if (!ActivateInviteCode(invitationCode))
                 return Flag.REGISTER_INVALID_INVITE;
@@ -110,6 +108,7 @@ namespace Aesoftware.Manager
             if (invite == null)
                 return false;
 
+            invite.Count--;
             DataManager.Instance.UpdateInviteCode(invite);
 
             return true;

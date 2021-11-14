@@ -9,14 +9,18 @@ namespace Aesoftware.Data
     public enum Flag
     {
         LOGIN_SUCCESS,
+        LOGIN_EMPTY_FIELD,
         LOGIN_USER_DOES_NOT_EXIST,
         LOGIN_INVALID_PASSWORD,
         LOGIN_WRONG_MACHINE,
+
         REGISTER_SUCCESS,
         REGISTER_EMPTY_FIELD,
         REGISTER_USER_ALREADY_EXIST,
         REGISTER_INVALID_INVITE,
         REGISTER_ACCOUNT_WITH_MACHINE_EXIST,
+
+        CLIENT_CURRENTLY_DISABLED,
     }
     public class DataString
     {

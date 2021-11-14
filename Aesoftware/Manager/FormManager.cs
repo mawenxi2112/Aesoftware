@@ -1,4 +1,6 @@
-﻿using Aesoftware.Page;
+﻿using Aesoftware.Data;
+using Aesoftware.ModulePage;
+using Aesoftware.Page;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +17,12 @@ namespace Aesoftware.Manager
         private bool isInit = false;
 
         public List<Form> formList = new List<Form>();
+
         private Form defaultForm = new Form();
         public LoginForm loginForm = new LoginForm();
         private RegisterForm registerForm = new RegisterForm();
         private MainMenuForm mainMenuForm = new MainMenuForm();
+        private LiteValorant liteValorantForm = new LiteValorant();
 
         FormManager()
         {
@@ -51,6 +55,7 @@ namespace Aesoftware.Manager
             formList.Add(loginForm);
             formList.Add(registerForm);
             formList.Add(mainMenuForm);
+            formList.Add(liteValorantForm);
 
             isInit = true;
 
@@ -97,6 +102,23 @@ namespace Aesoftware.Manager
             }
         }
 
+        public void PopulateModuleMenu()
+        {
+            List<ModuleMenuList> moduleMenuList = DataManager.Instance.GetModuleMenuList(AccountManager.Instance.currentAccount.Id);
+
+            foreach (ModuleMenuList item in moduleMenuList)
+            {
+                if (item.IsVisible == 0)
+                    continue;
+
+                var row = (DataGridViewRow)mainMenuForm.moduleDataGridView.RowTemplate.Clone();
+                row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, item.Expiry);
+                mainMenuForm.moduleDataGridView.Rows.Add(row);
+            }
+
+            // To-do: Reset module menu everytime this function is called
+        }
+
         public void ShowMessageBox(string title, string message)
         {
             MessageBox.Show(message, title);
@@ -134,9 +156,17 @@ namespace Aesoftware.Manager
                 ShowMesageBoxButton("Register Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        public void ClientDisabled()
+        public bool CheckClientDisabled()
         {
-            ShowMesageBoxButton("Notice", "Client is currently disabled!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            DataManager.Instance.LoadData();
+
+            if (DataManager.Instance.connection.IsClientDisabled == 1)
+            {
+                ShowMesageBoxButton("Notice", "Client is currently disabled!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
+
+            return false;
         }
 
         public void DatabaseError()

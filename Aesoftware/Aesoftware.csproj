@@ -99,6 +99,13 @@
     <Compile Include="Manager\DataManager.cs" />
     <Compile Include="Manager\FormManager.cs" />
     <Compile Include="Manager\SecurityManager.cs" />
+    <Compile Include="ModuleManager\LiteValorantManager.cs" />
+    <Compile Include="ModulePage\LiteValorant.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModulePage\LiteValorant.Designer.cs">
+      <DependentUpon>LiteValorant.cs</DependentUpon>
+    </Compile>
     <Compile Include="Page\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>

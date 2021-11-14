@@ -21,11 +21,15 @@ namespace Aesoftware.Page
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
+            if (FormManager.Instance.CheckClientDisabled())
+                return;
             FormManager.Instance.Login(LoginInputBox.Text, PasswordInputBox.Text);
         }
 
         private void RegisterButton_Click(object sender, EventArgs e)
         {
+            if (FormManager.Instance.CheckClientDisabled())
+                return;
             FormManager.Instance.ShowForm("RegisterForm");
         }
 

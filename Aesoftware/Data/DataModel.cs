@@ -51,6 +51,25 @@ namespace Aesoftware.Data
         public DateTime ExpiryDate { get; set; }
     }
 
+    public class ModuleMenuList
+    { 
+        public int Id { get; set; }
+        public string ModuleName { get; set; }
+        public DateTime Expiry { get; set; }
+        public int IsVisible { get; set; }
+
+        public int CanUse { get; set; }
+
+        public ModuleMenuList(int Id, string ModuleName, DateTime Expiry, int IsVisible, int CanUse)
+        {
+            this.Id = Id;
+            this.ModuleName = ModuleName;
+            this.Expiry = Expiry;
+            this.IsVisible = IsVisible;
+            this.CanUse = CanUse;
+        }
+    }
+
     public class Role
     {
         public int Id { get; set; }
@@ -60,10 +79,9 @@ namespace Aesoftware.Data
     public class Connection
     {
         public int PollingRate { get; set; }
-
         public int IsClientDisabled { get; set; }
-
         public string AnnouncementMessage { get; set; }
         public int DefaultInviteCount { get; set; }
+        public int IsHWIDLocked { get; set; }
     }
 }

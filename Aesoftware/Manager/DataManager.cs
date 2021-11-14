@@ -246,11 +246,42 @@ namespace Aesoftware.Manager
             Invite getInvite = inviteList.Where(invite => invite.Code == code).FirstOrDefault();
 
             if (getInvite != null)
-                return getInvite.Id;
+                return getInvite.IssueAccountId;
             else
                 return 0;
         }
         
+        public ModulePermission GetModulePermission(int moduleId, int accountId)
+        {
+            return modulePermissionList.Where(modulePermission => modulePermission.Id == moduleId && modulePermission.AccountId == accountId).FirstOrDefault();
+        }
+
+        public List<ModuleMenuList> GetModuleMenuList(int accountId)
+        {
+            List<ModuleMenuList> moduleMenuList = new List<ModuleMenuList>();
+
+            foreach (ModuleItem moduleItem in DataManager.Instance.moduleList)
+            {
+                ModulePermission modulePermission = GetModulePermission(moduleItem.Id, accountId);
+
+                if (modulePermission == null)
+                {
+                    int canUse = 0;
+
+                    if (GetAccountById(accountId).AccessRole >= moduleItem.MinimumRole)
+                        canUse = 1;
+
+                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, new DateTime(9999, 12, 31, 23, 59, 59), moduleItem.IsVisible, canUse));
+                }
+                else
+                {
+                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, modulePermission.ExpiryDate, modulePermission.IsVisible, modulePermission.CanUse));
+                }
+            }
+
+            return moduleMenuList;
+        }
+
         public bool DoesMachineExist(string machineGuid)
         {
             Account checkAccount = accountList.Where(account => account.MachineGuid == machineGuid && account.IsDeleted == 0).FirstOrDefault();

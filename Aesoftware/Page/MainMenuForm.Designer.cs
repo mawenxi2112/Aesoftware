@@ -28,33 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.moduleDataGridView = new System.Windows.Forms.DataGridView();
             this.ModuleId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModuleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Expiry = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModuleLaunch = new System.Windows.Forms.DataGridViewButtonColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moduleDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // moduleDataGridView
             // 
-            this.dataGridView1.AllowUserToResizeColumns = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.ColumnHeadersHeight = 24;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.moduleDataGridView.AllowUserToResizeColumns = false;
+            this.moduleDataGridView.AllowUserToResizeRows = false;
+            this.moduleDataGridView.ColumnHeadersHeight = 24;
+            this.moduleDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.moduleDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ModuleId,
             this.ModuleName,
             this.Expiry,
             this.ModuleLaunch});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowHeadersWidth = 30;
-            this.dataGridView1.Size = new System.Drawing.Size(390, 297);
-            this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.moduleDataGridView.Location = new System.Drawing.Point(12, 12);
+            this.moduleDataGridView.Name = "moduleDataGridView";
+            this.moduleDataGridView.ReadOnly = true;
+            this.moduleDataGridView.RowHeadersVisible = false;
+            this.moduleDataGridView.RowHeadersWidth = 30;
+            this.moduleDataGridView.Size = new System.Drawing.Size(390, 297);
+            this.moduleDataGridView.TabIndex = 1;
             // 
             // ModuleId
             // 
@@ -91,21 +90,21 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(413, 321);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.moduleDataGridView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MainMenuForm";
             this.Text = "Select Module";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainMenuForm_FormClosing);
             this.Load += new System.EventHandler(this.MainMenuForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moduleDataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        public System.Windows.Forms.DataGridView moduleDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModuleId;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModuleName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Expiry;
