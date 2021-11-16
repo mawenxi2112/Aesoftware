@@ -99,13 +99,14 @@ namespace Aesoftware.Manager
             roleList = Utility.DataTableToList<Role>(Query(DataString.QuerySelectRole));
             connection = Utility.DataTableToList<Connection>(Query(DataString.QuerySelectConnection))[0];
 
-            if (timer == null)
+            // Remove temporarily because it is causing issues
+/*            if (timer == null)
             {
                 timer = new Timer();
                 timer.Interval = connection.PollingRate;
                 timer.Elapsed += PollEvent;
                 timer.Enabled = true;
-            }
+            }*/
         }
 
         public void PollEvent(object sender, ElapsedEventArgs e)
@@ -220,6 +221,28 @@ namespace Aesoftware.Manager
             UpdateRecord(command);
         }
 
+        public void UpdateAccount(Account account)
+        {
+            string query = "Update Account Set Username=@Username, Password=@Password, AccessRole=@AccessRole," +
+                " IsDeleted=@IsDeleted, CreatedDate=@CreatedDate, LastModified=@LastModified, " +
+                "CreatedIP=@CreatedIP, LastIP=@LastIP, MachineGuid=@MachineGuid, InvitedById=@InvitedById, InviteCount=@InviteCount WHERE Id=@Id";
+            MySqlCommand command = new MySqlCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("@Username", account.Username);
+            command.Parameters.AddWithValue("@Password", account.Password);
+            command.Parameters.AddWithValue("@AccessRole", account.AccessRole);
+            command.Parameters.AddWithValue("@IsDeleted", account.IsDeleted);
+            command.Parameters.AddWithValue("@CreatedDate", account.CreatedDate);
+            command.Parameters.AddWithValue("@LastModified", account.LastModified);
+            command.Parameters.AddWithValue("@CreatedIP", account.CreatedIP);
+            command.Parameters.AddWithValue("@LastIP", account.LastIP);
+            command.Parameters.AddWithValue("@MachineGuid", account.MachineGuid);
+            command.Parameters.AddWithValue("@InvitedById", account.InvitedById);
+            command.Parameters.AddWithValue("@InviteCount", account.InviteCount);
+            command.Parameters.AddWithValue("@Id", account.Id);
+            UpdateRecord(command);
+        }
+
         public Invite ValidateInviteCode(string code)
         {
             return inviteList.Where(invite => invite.Code == code && invite.Count > 0).FirstOrDefault();
@@ -251,6 +274,11 @@ namespace Aesoftware.Manager
                 return 0;
         }
         
+        public int GetModuleIdFromName(string moduleName)
+        {
+            return moduleList.Where(module => module.Name == moduleName).Select(moduleItem => moduleItem.Id).FirstOrDefault();
+        }
+
         public ModulePermission GetModulePermission(int moduleId, int accountId)
         {
             return modulePermissionList.Where(modulePermission => modulePermission.Id == moduleId && modulePermission.AccountId == accountId).FirstOrDefault();
@@ -259,6 +287,7 @@ namespace Aesoftware.Manager
         public List<ModuleMenuList> GetModuleMenuList(int accountId)
         {
             List<ModuleMenuList> moduleMenuList = new List<ModuleMenuList>();
+            Account account = GetAccountById(accountId);
 
             foreach (ModuleItem moduleItem in DataManager.Instance.moduleList)
             {
@@ -268,10 +297,10 @@ namespace Aesoftware.Manager
                 {
                     int canUse = 0;
 
-                    if (GetAccountById(accountId).AccessRole >= moduleItem.MinimumRole)
+                    if (account.AccessRole >= moduleItem.MinimumRole)
                         canUse = 1;
 
-                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, new DateTime(9999, 12, 31, 23, 59, 59), moduleItem.IsVisible, canUse));
+                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, DateTime.MaxValue, moduleItem.IsVisible, canUse));
                 }
                 else
                 {

@@ -38,9 +38,11 @@
             // 
             // moduleDataGridView
             // 
+            this.moduleDataGridView.AllowUserToAddRows = false;
+            this.moduleDataGridView.AllowUserToDeleteRows = false;
             this.moduleDataGridView.AllowUserToResizeColumns = false;
             this.moduleDataGridView.AllowUserToResizeRows = false;
-            this.moduleDataGridView.ColumnHeadersHeight = 24;
+            this.moduleDataGridView.ColumnHeadersHeight = 32;
             this.moduleDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.moduleDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ModuleId,
@@ -52,8 +54,9 @@
             this.moduleDataGridView.ReadOnly = true;
             this.moduleDataGridView.RowHeadersVisible = false;
             this.moduleDataGridView.RowHeadersWidth = 30;
-            this.moduleDataGridView.Size = new System.Drawing.Size(390, 297);
+            this.moduleDataGridView.Size = new System.Drawing.Size(451, 297);
             this.moduleDataGridView.TabIndex = 1;
+            this.moduleDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.moduleDataGridView_CellContentClick);
             // 
             // ModuleId
             // 
@@ -74,22 +77,24 @@
             this.Expiry.HeaderText = "Expiring In";
             this.Expiry.Name = "Expiry";
             this.Expiry.ReadOnly = true;
-            this.Expiry.Width = 110;
+            this.Expiry.Width = 130;
             // 
             // ModuleLaunch
             // 
-            this.ModuleLaunch.HeaderText = "Launch";
+            this.ModuleLaunch.HeaderText = "ModuleAction";
             this.ModuleLaunch.Name = "ModuleLaunch";
             this.ModuleLaunch.ReadOnly = true;
             this.ModuleLaunch.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.ModuleLaunch.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.ModuleLaunch.Width = 50;
+            this.ModuleLaunch.Text = "Start";
+            this.ModuleLaunch.UseColumnTextForButtonValue = true;
+            this.ModuleLaunch.Width = 75;
             // 
             // MainMenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 321);
+            this.ClientSize = new System.Drawing.Size(475, 321);
             this.Controls.Add(this.moduleDataGridView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -97,6 +102,7 @@
             this.Text = "Select Module";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainMenuForm_FormClosing);
             this.Load += new System.EventHandler(this.MainMenuForm_Load);
+            this.Shown += new System.EventHandler(this.MainMenuForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.moduleDataGridView)).EndInit();
             this.ResumeLayout(false);
 

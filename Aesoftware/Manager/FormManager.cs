@@ -17,12 +17,14 @@ namespace Aesoftware.Manager
         private bool isInit = false;
 
         public List<Form> formList = new List<Form>();
+        List<ModuleMenuList> moduleMenuItemList = new List<ModuleMenuList>();
 
         private Form defaultForm = new Form();
         public LoginForm loginForm = new LoginForm();
         private RegisterForm registerForm = new RegisterForm();
         private MainMenuForm mainMenuForm = new MainMenuForm();
         private LiteValorant liteValorantForm = new LiteValorant();
+        private RiotAuthenticationForm riotAuthenticationForm = new RiotAuthenticationForm();
 
         FormManager()
         {
@@ -49,19 +51,31 @@ namespace Aesoftware.Manager
             if (isInit)
                 return null;
 
-            defaultForm = loginForm;
+            defaultForm = liteValorantForm;
 
             formList.Clear();
             formList.Add(loginForm);
             formList.Add(registerForm);
             formList.Add(mainMenuForm);
             formList.Add(liteValorantForm);
+            formList.Add(riotAuthenticationForm);
 
             isInit = true;
 
             return defaultForm;
         }
 
+        public bool DoesFormExist(string formName)
+        {
+            foreach (Form form in formList)
+            {
+                if (form.Name == formName)
+                    return true;
+            }
+
+            return false;
+        }
+        
         public bool IsFormActive(string formName)
         {
             foreach (Form form in formList)
@@ -80,6 +94,15 @@ namespace Aesoftware.Manager
             if (newForm != null)
                 newForm.Show();
         }
+
+        public void CloseForm(string formName)
+        {
+            Form newForm = formList.Where(form => form.Name == formName).FirstOrDefault();
+
+            if (newForm != null)
+                newForm.Hide();
+        }
+
         public void CloseAllForm(string exceptionForm = "")
         {
             foreach (Form form in Application.OpenForms)
@@ -97,26 +120,59 @@ namespace Aesoftware.Manager
 
             if (newForm != null)
             {
-                newForm.Show();
+                ShowForm(formName);
                 CloseAllForm(newForm.Name);
             }
         }
 
         public void PopulateModuleMenu()
         {
-            List<ModuleMenuList> moduleMenuList = DataManager.Instance.GetModuleMenuList(AccountManager.Instance.currentAccount.Id);
+            mainMenuForm.moduleDataGridView.Rows.Clear();
+            mainMenuForm.moduleDataGridView.Refresh();
 
-            foreach (ModuleMenuList item in moduleMenuList)
+            moduleMenuItemList = DataManager.Instance.GetModuleMenuList(AccountManager.Instance.currentAccount.Id);
+
+            foreach (ModuleMenuList item in moduleMenuItemList)
             {
                 if (item.IsVisible == 0)
                     continue;
 
                 var row = (DataGridViewRow)mainMenuForm.moduleDataGridView.RowTemplate.Clone();
-                row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, item.Expiry);
+                if (item.Expiry == DateTime.MaxValue)
+                    row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, "Never");
+                else
+                    row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, item.Expiry);
                 mainMenuForm.moduleDataGridView.Rows.Add(row);
             }
+        }
 
-            // To-do: Reset module menu everytime this function is called
+        public void LaunchModule(string moduleName)
+        {
+            if (String.IsNullOrEmpty(moduleName))
+            {
+                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_NULL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!DoesFormExist(moduleName))
+            {
+                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_DOES_NOT_EXIST", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!CheckForModulePermission(moduleName))
+            {
+                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_NO_PERMISSION", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (IsFormActive(moduleName))
+            {
+                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_INSTANCE_ALREADY_RUNNING", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            ShowForm(moduleName);
         }
 
         public void ShowMessageBox(string title, string message)
@@ -167,6 +223,13 @@ namespace Aesoftware.Manager
             }
 
             return false;
+        }
+
+        public bool CheckForModulePermission(string moduleName)
+        {
+            ModuleMenuList moduleMenuList = moduleMenuItemList.Where(module => module.ModuleName == moduleName).FirstOrDefault();
+
+            return Convert.ToBoolean(moduleMenuList.CanUse);
         }
 
         public void DatabaseError()

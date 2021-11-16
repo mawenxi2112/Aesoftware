@@ -35,5 +35,10 @@ namespace Aesoftware.Page
         {
             FormManager.Instance.ChangeForm("LoginForm");
         }
+
+        private void RegisterForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

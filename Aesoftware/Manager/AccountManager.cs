@@ -62,7 +62,11 @@ namespace Aesoftware.Manager
                     if (DataManager.Instance.connection.IsHWIDLocked == 1 && currentAccount.MachineGuid != SecurityManager.Instance.GetMachineGuid())
                         return Flag.LOGIN_WRONG_MACHINE;
                     else
+                    {
+                        currentAccount.LastIP = SecurityManager.Instance.GetPublicIP();
+                        DataManager.Instance.UpdateAccount(currentAccount);
                         return Flag.LOGIN_SUCCESS;
+                    }
                 }
                 else
                     return Flag.LOGIN_INVALID_PASSWORD;

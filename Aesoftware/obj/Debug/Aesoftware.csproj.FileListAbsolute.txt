@@ -36,3 +36,15 @@ C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\Aesoftware\Aesoftware\obj\De
 C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Newtonsoft.Json.dll
 C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Newtonsoft.Json.xml
 C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\obj\Debug\Aesoftware.Page.MainMenuForm.resources
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\ValAPI.Net.dll
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\ValAPI.Net.pdb
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\RestSharp.dll
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\RestSharp.xml
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.Logging.dll
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.Tokens.dll
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.Logging.xml
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\obj\Debug\Aesoftware.ModulePage.RiotAuthenticationForm.resources
+C:\Users\mawen\OneDrive\Documents\GitHub\Aesoftware\aesoftware\Aesoftware\obj\Debug\Aesoftware.ModulePage.LiteValorant.resources
