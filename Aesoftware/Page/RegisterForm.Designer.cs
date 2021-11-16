@@ -130,7 +130,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(220, 222);
-            this.ControlBox = false;
             this.Controls.Add(this.RegisterCloseButton);
             this.Controls.Add(this.RegisterRegisterButton);
             this.Controls.Add(this.RegisterInvitationCodeTextbox);
@@ -148,7 +147,6 @@
             this.Name = "RegisterForm";
             this.Text = "Register";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RegisterForm_FormClosing);
-            this.Load += new System.EventHandler(this.RegisterForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

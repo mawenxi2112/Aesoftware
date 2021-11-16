@@ -17,7 +17,7 @@ namespace Aesoftware.Manager
         private bool isInit = false;
 
         public List<Form> formList = new List<Form>();
-        List<ModuleMenuList> moduleMenuItemList = new List<ModuleMenuList>();
+        public List<ModuleMenuList> moduleMenuItemList = new List<ModuleMenuList>();
 
         private Form defaultForm = new Form();
         public LoginForm loginForm = new LoginForm();
@@ -51,7 +51,7 @@ namespace Aesoftware.Manager
             if (isInit)
                 return null;
 
-            defaultForm = liteValorantForm;
+            defaultForm = loginForm;
 
             formList.Clear();
             formList.Add(loginForm);
@@ -123,6 +123,11 @@ namespace Aesoftware.Manager
                 ShowForm(formName);
                 CloseAllForm(newForm.Name);
             }
+        }
+
+        public Form GetForm(string formName)
+        {
+            return formList.Where(form => form.Name == formName).FirstOrDefault();
         }
 
         public void PopulateModuleMenu()
@@ -239,6 +244,8 @@ namespace Aesoftware.Manager
 
         public void Logout()
         {
+            moduleMenuItemList.Clear();
+            AccountManager.Instance.currentAccount = null;
             ChangeForm("LoginForm");
         }
 

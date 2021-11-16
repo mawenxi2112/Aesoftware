@@ -1,4 +1,6 @@
-﻿using Aesoftware.Manager;
+﻿using Aesoftware.Data;
+using Aesoftware.Manager;
+using Aesoftware.ModulePage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,7 @@ namespace Aesoftware.ModuleManager
         private bool isInit = false;
 
         Auth auth = null;
+        Content content = null;
 
         ValorantManager()
         {
@@ -54,6 +57,9 @@ namespace Aesoftware.ModuleManager
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Error", "Error trying to load authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
+                if (content == null)
+                    content = Content.GetContentWrappedAPI();
+
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Success", "Successfully loaded authentication", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FormManager.Instance.CloseForm("RiotAuthenticationForm");
             }
@@ -67,10 +73,11 @@ namespace Aesoftware.ModuleManager
             /*if (valorantProcess != running)
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Error", "Valorant has to be running!", MessageBoxButtons.OK, MessageBoxIcon.Error);*/
 
-            if (DataManager.Instance.GetModulePermission(DataManager.Instance.GetModuleIdFromName("PremiumValorant"), AccountManager.Instance.currentAccount.Id).CanUse == 0)
+            ModuleMenuList moduleMenuList = FormManager.Instance.moduleMenuItemList.Where(moduleMenuItem => moduleMenuItem.ModuleName == "PremiumValorant").FirstOrDefault();
+
+            if (moduleMenuList.CanUse == 0)
             {
                 FormManager.Instance.ShowMesageBoxButton("Access Error", "You do not have access to module: PremiumValorant", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                FormManager.Instance.CloseForm("RiotAuthenticationForm");
                 return;
             }
 
@@ -80,6 +87,9 @@ namespace Aesoftware.ModuleManager
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Error", "Error trying to load authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
+                if (content == null)
+                    content = Content.GetContent(region);
+
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Success", "Successfully loaded authentication", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FormManager.Instance.CloseForm("RiotAuthenticationForm");
             }
@@ -90,6 +100,38 @@ namespace Aesoftware.ModuleManager
             if (!FormManager.Instance.IsFormActive("LiteValorant"))
                 return;
 
+            LiteValorant liteValorant = FormManager.Instance.GetForm("LiteValorant") as LiteValorant;
+
+            if (liteValorant == null || auth == null)
+                return;
+
+            liteValorant.infoListView.Items.Clear();
+            liteValorant.competitiveListView.Items.Clear();
+            liteValorant.storeListView.Items.Clear();
+            // To-do: Find a more dynamic way to add data, but I guess not is fine too :/
+            // Filling info field
+            Username username = Username.GetUsername(auth);
+            Balance balance = Balance.GetBalance(auth);
+            AccountXP accountXP = AccountXP.GetOffers(auth);
+            MMR mmr = MMR.GetMMR(auth);
+            Storefront storefront = Storefront.GetOffers(auth);
+
+            liteValorant.infoListView.Items.Add(new ListViewItem(new string[] { "Riot ID:", username.GameName + "#" + username.TagLine}));
+            liteValorant.infoListView.Items.Add(new ListViewItem(new string[] { "Valorant Points:", balance.ValorantPoints.ToString()}));
+            liteValorant.infoListView.Items.Add(new ListViewItem(new string[] { "Radianite Points:", balance.RadianitePoints.ToString()}));
+            liteValorant.infoListView.Items.Add(new ListViewItem(new string[] { "Level:", accountXP.Progress.Level.ToString()}));
+
+            liteValorant.competitiveListView.Items.Add(new ListViewItem(new string[] { "Rank:", Ranks.GetRankFormatted(mmr.Rank) }));
+            liteValorant.competitiveListView.Items.Add(new ListViewItem(new string[] { "Rank Rating:", mmr.RankedRating.ToString() }));
+            liteValorant.competitiveListView.Items.Add(new ListViewItem(new string[] { "Number Of Wins:", mmr.NumberOfWins.ToString() }));
+            liteValorant.competitiveListView.Items.Add(new ListViewItem(new string[] { "Number Of Games Played:", mmr.NumberOfGames.ToString() }));
+            liteValorant.competitiveListView.Items.Add(new ListViewItem(new string[] { "Leaderboard Rank:", mmr.LeaderboardRank.ToString() }));
+
+            foreach (string itemOffer in storefront.SkinsPanelLayout.SingleItemOffers)
+            {
+                Content.SkinLevel skinLevel = content.SkinLevels.Where(skin => skin.ID.ToUpper() == itemOffer.ToUpper()).FirstOrDefault();
+                liteValorant.storeListView.Items.Add(new ListViewItem(new string[] { "Skin:", skinLevel.Name }));
+            }
 
         }
 
