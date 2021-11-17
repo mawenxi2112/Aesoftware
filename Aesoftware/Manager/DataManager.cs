@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
+using System.Windows.Forms;
 using Aesoftware.Data;
 using Aesoftware.Other;
 using MySql.Data.MySqlClient;
@@ -37,6 +37,8 @@ namespace Aesoftware.Manager
         public List<Role> roleList = new List<Role>();
         public Connection connection = null;
         public Timer timer = null;
+
+        public Decimal buildVersion = 1.00M;
 
         DataManager()
         {
@@ -97,25 +99,28 @@ namespace Aesoftware.Manager
             moduleList = Utility.DataTableToList<ModuleItem>(Query(DataString.QuerySelectModule));
             modulePermissionList = Utility.DataTableToList<ModulePermission>(Query(DataString.QuerySelectModulePermission));
             roleList = Utility.DataTableToList<Role>(Query(DataString.QuerySelectRole));
-            connection = Utility.DataTableToList<Connection>(Query(DataString.QuerySelectConnection))[0];
+            List<Connection> connectionList = Utility.DataTableToList<Connection>(Query(DataString.QuerySelectConnection));
+            if (connectionList.Count > 0)
+                connection = connectionList[0];
 
             // Remove temporarily because it is causing issues
-/*            if (timer == null)
+            /*if (timer == null)
             {
                 timer = new Timer();
                 timer.Interval = connection.PollingRate;
-                timer.Elapsed += PollEvent;
-                timer.Enabled = true;
+                timer.Tick += new EventHandler(PollEvent);
+                timer.Start();
             }*/
         }
 
-        public void PollEvent(object sender, ElapsedEventArgs e)
+        public void PollEvent(object sender, EventArgs e)
         {
             if (!FormManager.Instance.IsFormActive("MainMenuForm"))
                 return;
 
             Debug.WriteLine("Polling!");
-            LoadData();
+            DataManager.Instance.LoadData();
+            FormManager.Instance.CheckClientDisabled();
 
             // Do account verification
             // Update modules
@@ -300,11 +305,22 @@ namespace Aesoftware.Manager
                     if (account.AccessRole >= moduleItem.MinimumRole)
                         canUse = 1;
 
-                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, DateTime.MaxValue, moduleItem.IsVisible, canUse));
+                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, DateTime.MaxValue, ExpiryStatus.NONE, moduleItem.IsVisible, canUse));
                 }
                 else
                 {
-                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, modulePermission.ExpiryDate, modulePermission.IsVisible, modulePermission.CanUse));
+                    int compareDateTime = DateTime.Compare(DateTime.Now, modulePermission.ExpiryDate);
+                    ExpiryStatus expiryStatus;
+
+                    if (compareDateTime < 0)
+                        expiryStatus = ExpiryStatus.CURRENT;
+                    else
+                        expiryStatus = ExpiryStatus.EXPIRED;
+
+                    if (modulePermission.ExpiryDate == DateTime.MaxValue)
+                        expiryStatus = ExpiryStatus.NEVER;
+
+                    moduleMenuList.Add(new ModuleMenuList(moduleItem.Id, moduleItem.Name, modulePermission.ExpiryDate, expiryStatus, modulePermission.IsVisible, modulePermission.CanUse));
                 }
             }
 

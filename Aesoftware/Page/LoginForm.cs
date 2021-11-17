@@ -35,7 +35,9 @@ namespace Aesoftware.Page
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
+            SecurityManager.Instance.AddAuditLog("LoginForm", AuditAction.LAUNCH_CLIENT);
             DataManager.Instance.LoadData();
+            FormManager.Instance.ShowAnnouncementForm();
         }
 
     }

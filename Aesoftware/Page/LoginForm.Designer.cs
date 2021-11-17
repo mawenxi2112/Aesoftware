@@ -107,6 +107,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoginForm";
+            this.ShowIcon = false;
             this.Text = "aesoftware";
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);

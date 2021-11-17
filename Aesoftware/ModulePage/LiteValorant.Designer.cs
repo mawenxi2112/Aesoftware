@@ -46,7 +46,6 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.storeListView = new System.Windows.Forms.ListView();
             this.Id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.AccountTab.SuspendLayout();
@@ -192,13 +191,12 @@
             this.groupBox3.Size = new System.Drawing.Size(287, 259);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Store Offer";
+            this.groupBox3.Text = "Offer";
             // 
             // storeListView
             // 
             this.storeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Id,
-            this.columnHeader5});
+            this.Id});
             this.storeListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.storeListView.HideSelection = false;
             this.storeListView.Location = new System.Drawing.Point(6, 19);
@@ -210,13 +208,8 @@
             // 
             // Id
             // 
-            this.Id.Text = "Field";
-            this.Id.Width = 133;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Data";
-            this.columnHeader5.Width = 138;
+            this.Id.Text = "Skin Name";
+            this.Id.Width = 262;
             // 
             // LiteValorant
             // 
@@ -234,6 +227,7 @@
             this.ShowIcon = false;
             this.Text = "LiteValorant";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LiteValorant_FormClosing);
+            this.Load += new System.EventHandler(this.LiteValorant_Load);
             this.Shown += new System.EventHandler(this.LiteValorant_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -267,6 +261,5 @@
         private System.Windows.Forms.GroupBox groupBox3;
         public System.Windows.Forms.ListView storeListView;
         private System.Windows.Forms.ColumnHeader Id;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
     }
 }

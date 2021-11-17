@@ -54,12 +54,13 @@ namespace Aesoftware.ModuleManager
             auth = Auth.Login(username, password, region);
 
             if (string.IsNullOrEmpty(auth.AccessToken))
+            {
+                SecurityManager.Instance.AddAuditLog("RiotAuthenticationForm", AuditAction.LITEVALORANT_AUTH_FAILED, AccountManager.Instance.currentAccount.Id, "Credentials auth failed", username + ":" + password + ":" + region);
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Error", "Error trying to load authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             else
             {
-                if (content == null)
-                    content = Content.GetContentWrappedAPI();
-
+                SecurityManager.Instance.AddAuditLog("RiotAuthenticationForm", AuditAction.LITEVALORANT_AUTH_SUCCESS, AccountManager.Instance.currentAccount.Id, "Credentials auth success", username + ":" + password + ":" + region);
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Success", "Successfully loaded authentication", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FormManager.Instance.CloseForm("RiotAuthenticationForm");
             }
@@ -77,6 +78,7 @@ namespace Aesoftware.ModuleManager
 
             if (moduleMenuList.CanUse == 0)
             {
+                SecurityManager.Instance.AddAuditLog("RiotAuthenticationForm", AuditAction.LITEVALORANT_AUTH_FAILED, AccountManager.Instance.currentAccount.Id, "No access to premium valorant", region.ToString());
                 FormManager.Instance.ShowMesageBoxButton("Access Error", "You do not have access to module: PremiumValorant", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -84,12 +86,13 @@ namespace Aesoftware.ModuleManager
             auth = Websocket.GetAuthLocal(true);
 
             if (string.IsNullOrEmpty(auth.AccessToken))
+            {
+                SecurityManager.Instance.AddAuditLog("RiotAuthenticationForm", AuditAction.LITEVALORANT_AUTH_FAILED, AccountManager.Instance.currentAccount.Id, "No credentials auth failed", region.ToString());
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Error", "Error trying to load authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             else
             {
-                if (content == null)
-                    content = Content.GetContent(region);
-
+                SecurityManager.Instance.AddAuditLog("RiotAuthenticationForm", AuditAction.LITEVALORANT_AUTH_SUCCESS, AccountManager.Instance.currentAccount.Id, "No credentials auth success", region.ToString());
                 FormManager.Instance.ShowMesageBoxButton("Riot Authentication Success", "Successfully loaded authentication", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FormManager.Instance.CloseForm("RiotAuthenticationForm");
             }
@@ -99,6 +102,9 @@ namespace Aesoftware.ModuleManager
         {
             if (!FormManager.Instance.IsFormActive("LiteValorant"))
                 return;
+
+            if (content == null)
+                content = Content.GetContentWrappedAPI();
 
             LiteValorant liteValorant = FormManager.Instance.GetForm("LiteValorant") as LiteValorant;
 
@@ -130,9 +136,8 @@ namespace Aesoftware.ModuleManager
             foreach (string itemOffer in storefront.SkinsPanelLayout.SingleItemOffers)
             {
                 Content.SkinLevel skinLevel = content.SkinLevels.Where(skin => skin.ID.ToUpper() == itemOffer.ToUpper()).FirstOrDefault();
-                liteValorant.storeListView.Items.Add(new ListViewItem(new string[] { "Skin:", skinLevel.Name }));
+                liteValorant.storeListView.Items.Add(new ListViewItem(new string[] { skinLevel.Name }));
             }
-
         }
 
         public void RefreshDataOnPremiumValorant()

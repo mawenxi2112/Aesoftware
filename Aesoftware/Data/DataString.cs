@@ -20,6 +20,13 @@ namespace Aesoftware.Data
         REGISTER_INVALID_INVITE,
         REGISTER_ACCOUNT_WITH_MACHINE_EXIST,
 
+        MODULE_LAUNCH_SUCCESS,
+        MODULE_NULL,
+        MODULE_NOT_FOUND,
+        MODULE_NO_ACCESS,
+        MODULE_EXPIRED,
+        MODULE_INSTANCE_RUNNING,
+
         CLIENT_CURRENTLY_DISABLED,
     }
     public class DataString

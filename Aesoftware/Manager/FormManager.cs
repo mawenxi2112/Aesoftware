@@ -130,6 +130,14 @@ namespace Aesoftware.Manager
             return formList.Where(form => form.Name == formName).FirstOrDefault();
         }
 
+        public void ShowAnnouncementForm()
+        {
+            if (DataManager.Instance.connection.ForceAnnouncement == 0)
+                return;
+
+            ShowMessageBox(DataManager.Instance.connection.AnnouncementTitle, DataManager.Instance.connection.AnnouncementMessage);
+        }
+        
         public void PopulateModuleMenu()
         {
             mainMenuForm.moduleDataGridView.Rows.Clear();
@@ -143,41 +151,51 @@ namespace Aesoftware.Manager
                     continue;
 
                 var row = (DataGridViewRow)mainMenuForm.moduleDataGridView.RowTemplate.Clone();
-                if (item.Expiry == DateTime.MaxValue)
-                    row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, "Never");
-                else
+                
+                if (item.Status == ExpiryStatus.CURRENT)
                     row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, item.Expiry);
+                else
+                    row.CreateCells(mainMenuForm.moduleDataGridView, item.Id, item.ModuleName, item.Status.ToString());
+
                 mainMenuForm.moduleDataGridView.Rows.Add(row);
             }
         }
 
         public void LaunchModule(string moduleName)
         {
-            if (String.IsNullOrEmpty(moduleName))
+            Flag flag = TryLaunchModule(moduleName);
+
+            if (flag != Flag.MODULE_LAUNCH_SUCCESS)
             {
-                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_NULL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SecurityManager.Instance.AddAuditLog("MainMenuForm", AuditAction.LAUNCH_MODULE_FAILED, AccountManager.Instance.currentAccount.Id, flag.ToString());
+                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            else
+            {
+                SecurityManager.Instance.AddAuditLog("MainMenuForm", AuditAction.LAUNCH_MODULE_SUCCESS, AccountManager.Instance.currentAccount.Id, flag.ToString());
+                ShowForm(moduleName);
+            }
+        }
+
+        public Flag TryLaunchModule(string moduleName)
+        {
+            if (String.IsNullOrEmpty(moduleName))
+                return Flag.MODULE_NULL;
 
             if (!DoesFormExist(moduleName))
-            {
-                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_DOES_NOT_EXIST", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                return Flag.MODULE_NOT_FOUND;
 
             if (!CheckForModulePermission(moduleName))
-            {
-                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_NO_PERMISSION", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                return Flag.MODULE_NO_ACCESS;
+
+            if (CheckForModuleExpiry(moduleName))
+                return Flag.MODULE_EXPIRED;
 
             if (IsFormActive(moduleName))
-            {
-                ShowMesageBoxButton("ModuleAction Failed", "Reason: " + "MODULE_INSTANCE_ALREADY_RUNNING", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                return Flag.MODULE_INSTANCE_RUNNING;
 
-            ShowForm(moduleName);
+            return Flag.MODULE_LAUNCH_SUCCESS;
         }
 
         public void ShowMessageBox(string title, string message)
@@ -196,12 +214,15 @@ namespace Aesoftware.Manager
 
             if (flag == Data.Flag.LOGIN_SUCCESS)
             {
+                SecurityManager.Instance.AddAuditLog("LoginForm", AuditAction.LOGIN_SUCCESS, DataManager.Instance.GetAccountByUsername(username).Id, flag.ToString(), username + ":" + password);
                 ShowMesageBoxButton("Login Success", "User authenticated!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ChangeForm("MainMenuForm");
             }
             else
+            {
+                SecurityManager.Instance.AddAuditLog("LoginForm", AuditAction.LOGIN_FAILED, 0, flag.ToString(), username + ":" + password);
                 ShowMesageBoxButton("Login Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+            }
         }
 
         public void Register(string username, string password, string email, string invitationCode)
@@ -210,24 +231,48 @@ namespace Aesoftware.Manager
 
             if (flag == Data.Flag.REGISTER_SUCCESS)
             {
+                SecurityManager.Instance.AddAuditLog("RegisterForm", AuditAction.REGISTER_SUCCESS, 0, flag.ToString(), username + ":" + password + ":" + email + ":" + invitationCode);
                 ShowMesageBoxButton("Register Success", "User registered!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ChangeForm("LoginForm");
             }
             else
+            {
+                SecurityManager.Instance.AddAuditLog("RegisterForm", AuditAction.REGISTER_FAILED, 0, flag.ToString(), username + ":" + password + ":" + email + ":" + invitationCode);
                 ShowMesageBoxButton("Register Failed", "Reason: " + flag.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public bool CheckClientDisabled()
         {
             DataManager.Instance.LoadData();
+            Connection connection = DataManager.Instance.connection;
+
+            if (connection.DisableClientIfVersionMismatch == 1 && 
+                (DataManager.Instance.buildVersion < connection.AllowedVersion &&
+                DataManager.Instance.buildVersion != connection.LatestVersion))
+            {
+                Logout();
+                ShowMesageBoxButton("Version mismatch", "A newer client version is available!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
 
             if (DataManager.Instance.connection.IsClientDisabled == 1)
             {
+                Logout();
                 ShowMesageBoxButton("Notice", "Client is currently disabled!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return true;
             }
 
             return false;
+        }
+
+        
+
+        public bool CheckForModuleExpiry(string moduleName)
+        {
+            ModuleMenuList moduleMenuList = moduleMenuItemList.Where(module => module.ModuleName == moduleName).FirstOrDefault();
+
+            return moduleMenuList.Status == ExpiryStatus.EXPIRED;
         }
 
         public bool CheckForModulePermission(string moduleName)
@@ -244,7 +289,6 @@ namespace Aesoftware.Manager
 
         public void Logout()
         {
-            moduleMenuItemList.Clear();
             AccountManager.Instance.currentAccount = null;
             ChangeForm("LoginForm");
         }

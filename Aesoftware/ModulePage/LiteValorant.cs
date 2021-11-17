@@ -45,5 +45,10 @@ namespace Aesoftware.ModulePage
                 Hide();
             }
         }
+
+        private void LiteValorant_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
